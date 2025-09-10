@@ -27,3 +27,7 @@ args = "cd Di2ErgApp && npm start"
 
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[ports]]
+localPort = 34603
+externalPort = 80
