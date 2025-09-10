@@ -19,14 +19,13 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
         
-    - name: Setup Node.js
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: package-lock.json
         
-    - name: Install dependencies
+    - name: Install npm dependencies
       run: npm ci
       
     - name: Setup Android SDK
@@ -35,17 +34,29 @@ jobs:
         api-level: 34
         build-tools: 34.0.0
         
-    - name: Grant execute permission for gradlew
-      run: chmod +x android/gradlew
-      
-    - name: Build Android APK
+    - name: Debug - List files
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Files in root:"
+        ls -la
+        echo "Files in android directory:"
+        ls -la android/
+        
+    - name: Make gradlew executable
+      run: |
+        chmod +x android/gradlew
+        ls -la android/gradlew
+        
+    - name: Build Release APK
       run: |
         cd android
-        ./gradlew assembleRelease
+        ./gradlew clean
+        ./gradlew assembleRelease --stacktrace
         
-    - name: Upload APK
+    - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: di2-erg-app-release
+        name: di2-erg-training-app-release
         path: android/app/build/outputs/apk/release/app-release.apk
         retention-days: 30
